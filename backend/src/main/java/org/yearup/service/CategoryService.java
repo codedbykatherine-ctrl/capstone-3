@@ -41,17 +41,26 @@ public class CategoryService
 
     public Category update(int id, Category category)
     {
-        // update category and return the updated category
-        //retrieve the existing category from teh database using its id
+        //retrieve the existing category from the database using its id
+        //This prevents overwriting data or accidents
         Category existing = categoryRepository.findById(id).orElseThrow();
+        //Update the category description with the new value from the request
         existing.setDescription(category.getDescription());
+        //Update the category name with the new value from the request
         existing.setName(category.getName());
+        //Save the updated category and return the modified object
         return categoryRepository.save(existing);
+        /* this prevents overwriting fields,
+         * lose data, insert new row if the id isn't set correctly
+         * updating the existing entity is safer
+         */
+
     }
 
     public void delete(int categoryId)
     {
-        // delete category
+        //Delete a category from the database
+        //using the category's ID
         categoryRepository.deleteById(categoryId);
     }
 }
