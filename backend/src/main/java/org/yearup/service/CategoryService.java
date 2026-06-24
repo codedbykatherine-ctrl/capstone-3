@@ -26,16 +26,18 @@ public class CategoryService
     public Optional<Category> getById(int categoryId)
     {
         // get category by id
+        //retrieve the category with the specified id from the database
         return categoryRepository.findById(categoryId);
     }
 
     public Category create(Category category)
     {
         // create a new category
+        category.setCategoryId(0);
         return categoryRepository.save(category);
     }
 
-    public Category update(Category category)
+    public Category update(int id, Category category)
     {
         // update category and return the updated category
         return categoryRepository.save(category);
