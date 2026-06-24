@@ -33,14 +33,20 @@ public class CategoryService
     public Category create(Category category)
     {
         // create a new category
+        //reset the category id so the database generates a new primary key
        category.setCategoryId(0);
+       //Save the new category and return the created category object
        return categoryRepository.save(category);
     }
 
     public Category update(int id, Category category)
     {
         // update category and return the updated category
-        return categoryRepository.save(category);
+        //retrieve the existing category from teh database using its id
+        Category existing = categoryRepository.findById(id).orElseThrow();
+        existing.setDescription(category.getDescription());
+        existing.setName(category.getName());
+        return categoryRepository.save(existing);
     }
 
     public void delete(int categoryId)
