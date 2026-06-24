@@ -85,7 +85,7 @@ public class CategoriesController {
         // check if the category exists before updating it
         if (categoryService.getById(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            //Return 404 if the category id can not be found 
+            //Return 404 if the category id can not be found
         }
         //update category and return the updated object
         return categoryService.update(id, category);
@@ -95,10 +95,16 @@ public class CategoriesController {
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_ADMN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
         // delete the category by id and return status 204 No Content
+        //Verify if the category exists before attempting to delete it
+        if(categoryService.getById(id).isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            //return 404 Not Found if the category id does not exist
+        }
         categoryService.delete(id);
+        // return 204 No Content to indicate the deletion was successful 
         return ResponseEntity.noContent().build();
     }
 }
