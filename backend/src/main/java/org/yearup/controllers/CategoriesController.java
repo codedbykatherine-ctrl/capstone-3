@@ -72,7 +72,6 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
         // insert the category and return it with status 201 Created
-        Category saved = categoryService.create(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(category));
     }
 
@@ -99,12 +98,12 @@ public class CategoriesController {
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
         // delete the category by id and return status 204 No Content
         //Verify if the category exists before attempting to delete it
-        if(categoryService.getById(id).isEmpty()){
+        if (categoryService.getById(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
             //return 404 Not Found if the category id does not exist
         }
         categoryService.delete(id);
-        // return 204 No Content to indicate the deletion was successful 
+        // return 204 No Content to indicate the deletion was successful
         return ResponseEntity.noContent().build();
     }
 }
