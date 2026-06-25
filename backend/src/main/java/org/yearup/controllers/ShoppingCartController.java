@@ -2,11 +2,10 @@ package org.yearup.controllers;
 
 import org.aspectj.weaver.patterns.ThisOrTargetPointcut;
 import org.hibernate.sql.ast.tree.cte.SelfRenderingCteObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
@@ -45,12 +44,24 @@ public class ShoppingCartController
         int userId = user.getId();
 
         // use the shoppingCartService to get all items in the cart and return the cart
-        return null;
+        return shoppingCartService.getByUserId(userId);
     }
 
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be added)
     // return the updated cart with status 201 Created
+    @PostMapping("/products/{productId}")
+    public ResponseEntity<ShoppingCart> addProductToCart(@PathVariable int productId, Principal principal){
+        String username = principal.getName();
+        int userId = userService.getIdByUsername(username);
+
+        ShoppingCart updatedCart= shoppingCartService.addProduct(userId,productId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updatedCart);
+
+
+
+
+    }
 
 
     // add a PUT method to update an existing product in the cart - the url should be
