@@ -23,11 +23,10 @@ public class CategoryService
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getById(int categoryId)
+    public Category  getById(int categoryId)
     {
-        // get category by id
-        //retrieve the category with the specified id from the database
-        return categoryRepository.findById(categoryId);
+       //ask repository 
+        return categoryRepository.findById(categoryId).orElse(null);
     }
 
     public Category create(Category category)
@@ -43,7 +42,7 @@ public class CategoryService
     {
         //retrieve the existing category from the database using its id
         //This prevents overwriting data or accidents
-        Category existing = categoryRepository.findById(id).orElseThrow();
+        Category existing = getById(id);
         //Update the category description with the new value from the request
         existing.setDescription(category.getDescription());
         //Update the category name with the new value from the request
