@@ -11,18 +11,19 @@ import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
 import org.yearup.service.UserService;
-
 import java.security.Principal;
 
-// convert this class to a REST controller
-// only logged in users should have access to these actions
+// convert this class into a REST controller that handles shopping cart requests
+// map all endpoints to /cart
+//only authenticated users with the USER role can access these endpoints
+//allow requests from the frontend application
 @RestController
 @RequestMapping("/cart")
 @PreAuthorize("hasRole('ROLE_USER')")
 @CrossOrigin
 public class ShoppingCartController
 {
-    // a shopping cart controller depends on the service layer
+    // a shopping cart controller depends on the service la
     private final ShoppingCartService shoppingCartService;
     private final UserService userService;
 
