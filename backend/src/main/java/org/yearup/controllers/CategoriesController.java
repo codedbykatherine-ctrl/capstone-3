@@ -1,5 +1,6 @@
 package org.yearup.controllers;
 
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 //handles API/web requests and returns data like Json
-@CrossOrigin
+@CrossOrigin(origins ="*")
 //wedsite uses to connect frontend
 @RequestMapping("/categories")
 //any requests with /categories belongs to this controller
@@ -51,10 +52,14 @@ public class CategoriesController {
     // add the appropriate annotation for a get action
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Category getById(@PathVariable int id) {
+    public ResponseEntity<Category> getById(@PathVariable int id) {
         // get the category by id
-        return categoryService.getById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Category category =categoryService.getById(id);
+        if(category == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(category);
     }
 
     // the url to return all products in category 1 would look like this
@@ -79,15 +84,15 @@ public class CategoriesController {
     // add annotation to ensure that only an ADMIN can call this function
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Category updateCategory(@PathVariable int id, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id and return the updated category (200 OK)
         // check if the category exists before updating it
-        if (categoryService.getById(id).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            //Return 404 if the category id can not be found
-        }
+//        if (categoryService.getById(id).isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+//            //Return 404 if the category id can not be found
+//        }
         //update category and return the updated object
-        return categoryService.update(id, category);
+        return ResponseEntity.ok(categoryService.update(id, category));
     }
 
 
@@ -97,11 +102,6 @@ public class CategoriesController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
         // delete the category by id and return status 204 No Content
-        //Verify if the category exists before attempting to delete it
-        if (categoryService.getById(id).isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-            //return 404 Not Found if the category id does not exist
-        }
         categoryService.delete(id);
         // return 204 No Content to indicate the deletion was successful
         return ResponseEntity.noContent().build();
