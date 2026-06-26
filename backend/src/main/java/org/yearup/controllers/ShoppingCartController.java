@@ -1,6 +1,4 @@
 package org.yearup.controllers;
-import org.aspectj.weaver.patterns.ThisOrTargetPointcut;
-import org.hibernate.sql.ast.tree.cte.SelfRenderingCteObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +8,7 @@ import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
 import org.yearup.service.UserService;
+
 import java.security.Principal;
 
 // convert this class into a REST controller that handles shopping cart requests
@@ -35,7 +34,7 @@ public class ShoppingCartController {
     // each method in this controller requires a Principal object as a parameter
     @GetMapping
     public ShoppingCart getCart(Principal principal) {
-        // get the currently logged in username
+        // get the currently logged-in username
         String userName = principal.getName();
         // find database user by username
         User user = userService.getByUserName(userName);
@@ -70,7 +69,7 @@ public class ShoppingCartController {
         int userId = userService.getIdByUsername(username);
 
         ShoppingCart shoppingCart = shoppingCartService.updateShoppingCart(userId, productId, shoppingCartItem);
-        if (shoppingCart == null){
+        if (shoppingCart == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(shoppingCart);
@@ -79,14 +78,19 @@ public class ShoppingCartController {
 
     // add a DELETE method to clear all products from the current users cart
     // https://localhost:8080/cart  - return the (now empty) cart so the front end can refresh it (200 OK)
-@DeleteMapping
-// maps this method to HTTP delete request and expects an id in the URL
-  public ResponseEntity<ShoppingCart> deleteProducts (Principal principal) {
- String username = principal.getName();
- User user = userService.getByUserName(username);
- shoppingCartService.deleteProducts(user.getId());
-  ShoppingCart cart = shoppingCartService.getByUserId(user.getId());
-
-  return ResponseEntity.status(HttpStatus.OK).body(cart);
+    //Maps this method tp HTTP DELETE requests
+    @DeleteMapping
+    // The endpoint removes all products from the logged-in user's cart
+    public ResponseEntity<ShoppingCart> deleteProducts(Principal principal) {
+        // Get the username of the currently authenticated user
+        String username = principal.getName();
+        // FiND THE User object that belongs to the logged-in username
+        User user = userService.getByUserName(username);
+        //Remove all products from the user's shopping cart
+        shoppingCartService.deleteProducts(user.getId());
+        // Retrieve the now empty shopping cart after deletion
+        ShoppingCart cart = shoppingCartService.getByUserId(user.getId());
+        //Return HTTP 200 ok along with the updated(empty)shopping cart.
+        return ResponseEntity.status(HttpStatus.OK).body(cart);
     }
 }
