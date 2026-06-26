@@ -65,13 +65,17 @@ public class ShoppingCartController {
     // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
     @PutMapping("/products/{productId}")
     public ResponseEntity<ShoppingCart> updateProduct(@PathVariable int productId, @RequestBody ShoppingCartItem shoppingCartItem, Principal principal) {
+        // Get the username of the currently authenticated user
         String username = principal.getName();
+        // Find the user's id using their username
         int userId = userService.getIdByUsername(username);
-
+        // Update the quantity of the specified product in the user's shopping
         ShoppingCart shoppingCart = shoppingCartService.updateShoppingCart(userId, productId, shoppingCartItem);
+        // If the product was not found in the cart, return HTTP 404 Not Found
         if (shoppingCart == null) {
             return ResponseEntity.notFound().build();
         }
+        // Return HTTP 200 OK along with the updated shopping cart
         return ResponseEntity.ok().body(shoppingCart);
     }
 
