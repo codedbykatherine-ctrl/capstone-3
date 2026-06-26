@@ -1,12 +1,10 @@
 package org.yearup.controllers;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
 import org.yearup.service.CategoryService;
@@ -87,10 +85,6 @@ public class CategoriesController {
     public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category) {
         // update the category by id and return the updated category (200 OK)
         // check if the category exists before updating it
-//        if (categoryService.getById(id).isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//            //Return 404 if the category id can not be found
-//        }
         //update category and return the updated object
         return ResponseEntity.ok(categoryService.update(id, category));
     }
@@ -99,7 +93,7 @@ public class CategoriesController {
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
     @DeleteMapping("/{id}")
-    @PreAuthorize(("hasRole('ROLE_ADMIN')"))
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
         // delete the category by id and return status 204 No Content
         categoryService.delete(id);
