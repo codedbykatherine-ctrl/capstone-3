@@ -104,8 +104,8 @@ var Mustache = {
     return s.toString().replace(/[&"<>\\]/g, function(s) {
       switch(s) {
         case "&": return "&amp;";
-        case "\\": return "\\\\";;
-        case '"': return '\"';;
+        case "\\": return "\\\\";
+        case '"': return '\"';
         case "<": return "&lt;";
         case ">": return "&gt;";
         default: return s;
